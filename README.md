@@ -34,6 +34,10 @@ and
 </property>
 ```
 
+Look at https://github.com/gomathi/hbase-rrlb/blob/master/src/org/balancer/custombalancer/CustomLoadBalancer.java for a child class example.
+
+Look at the main load balancer class at https://github.com/gomathi/hbase-rrlb/blob/master/src/org/balancer/rrlbalancer/RelatedRegionsLoadBalancer.java
+
 Further description is as below
 -
 
