@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.balancer.rrlbalancer.RelatedRegionsLoadBalancer;
+
 public class CustomLoadBalancer extends RelatedRegionsLoadBalancer {
 
     public static final List<Set<String>> relatedTablesList = new ArrayList<Set<String>>();
