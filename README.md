@@ -3,13 +3,13 @@ hbase-rrlb
 
 An implementation of hbase load balancer which colocates related regions together. 
 
-Most Hbase based applications have data in multiple tables for a given user. Usually the tables are divided into fixed no of regions based on the user ids or application specific logic. It is a good practice that placing all related regions in same region server. This will avoid unnecessary network hops.
+Most Hbase based applications have data in multiple tables for a given user. Usually the tables are divided into fixed number of regions based on the user ids or application specific logic. It is a good practice that placing all related regions in same region server. This will avoid unnecessary network hops.
 
 This load balancer provides following support
 
 1. Colocating related regions. There is a way to inform which tables are related tables to the load balancer, and based on that the placement is executed by the load balancer.
-2. Weighted load balancing. This allows more heavier hosts to get more no of regions. There is a way to provide hostweights. By default all the region servers are taking equal weight.
-3. When HBase load balancer returns the region plans, the assignment manager immediately sends out the regions for movements. This will cause huge no of movements of regions. This load balancer provides a way to move only fixed no of regions at a time. You can enable/disable it when you create the load balancer.
+2. Weighted load balancing. This allows more heavier hosts to get more number of regions. There is a way to provide hostweights. By default all the region servers are taking equal weight.
+3. When HBase load balancer returns the region plans, the assignment manager immediately sends out the regions for movements. This will cause huge number of movements of regions. This load balancer provides a way to move only fixed number of regions at a time. You can enable/disable it when you create the load balancer.
 
 To use this package, you need to do following things
 
@@ -46,7 +46,7 @@ I am working on a project that uses HBase. The project has multiple tables. Each
 Problem
 -
 
-We have pre-divided the regions for each table. A set of tables have same no of regions, and each region share same start key and end key. For a given user, data is available on all these tables, and the regions of the user will have same start key and end key. When I was reading HBase and Hadoop, the best practice suggests to colocate data in the same server. Thus, for any query, and for a given user, HBase does not have to talk to multiple region servers. If you can place all related regions in a single region server, then overall we can achieve reduced latency.  Unfortunately HBase does not provide any load balancer LoadBalancer (HBase 2.0.0-SNAPSHOT API) that supports placing related regions in a region server. But its easy to write your own load balancer implementation and plug it in. 
+We have pre-divided the regions for each table. A set of tables have same number of regions, and each region share same start key and end key. For a given user, data is available on all these tables, and the regions of the user will have same start key and end key. When I was reading HBase and Hadoop, the best practice suggests to colocate data in the same server. Thus, for any query, and for a given user, HBase does not have to talk to multiple region servers. If you can place all related regions in a single region server, then overall we can achieve reduced latency.  Unfortunately HBase does not provide any load balancer LoadBalancer (HBase 2.0.0-SNAPSHOT API) that supports placing related regions in a region server. But its easy to write your own load balancer implementation and plug it in. 
 
 Solution
 -
@@ -63,13 +63,13 @@ Default Load Balancer - Algorithm - HBase
 
 The default load balancer(HBase) has an easier algorithm implementation to load balance regions across available region servers. The algorithm works as following
 
-1) Calculate the total no of regions, and find the average no of regions per region server by dividing the total no of regions by available servers count. Since total may not be evenly divisible, its necessary that we calculate min and max as per the average value. For example if there are 8 regions, and there are 3 servers, then the average is 2. Minimum value is 2, and maximum value is (min + 1) if totalRegions%totServers != 0. Here it is 3, as 8 % 3 => 2.
+1) Calculate the total number of regions, and find the average number of regions per region server by dividing the total number of regions by available servers count. Since total may not be evenly divisible, its necessary that we calculate min and max as per the average value. For example if there are 8 regions, and there are 3 servers, then the average is 2. Minimum value is 2, and maximum value is (min + 1) if totalRegions%totServers != 0. Here it is 3, as 8 % 3 => 2.
 
 2) Sort all servers by their load, and make sure the sorted sequence is non decreasing. 
 
 3) If first and last server's load are within the interval >= min and <= max, then load is balanced. 
 
-4) Otherwise, first reduce the load on servers which have > max no of regions, by placing the load on servers which have < max load. Once this is done, all servers will have <= max regions. But there is no guarantee that all servers will have >= min regions. So its necessary that we run one more step, where we take regions from servers which have > min regions, and place them into servers which have < min regions. 
+4) Otherwise, first reduce the load on servers which have > max number of regions, by placing the load on servers which have < max load. Once this is done, all servers will have <= max regions. But there is number guarantee that all servers will have >= min regions. So its necessary that we run one more step, where we take regions from servers which have > min regions, and place them into servers which have < min regions. 
 
 The algorithm is so simple. It also does not use any modulo hashing/consistent hashing techniques, and it avoids unnecessary swapping of regions. Moving regions between servers involves the regions to be not available for shorter period of time. We should avoid swapping regions unnecessarily.
 
